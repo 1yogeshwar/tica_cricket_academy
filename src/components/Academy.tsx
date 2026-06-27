@@ -5,8 +5,8 @@ import {
   useTransform,
   useSpring,
   useMotionValue,
-  useMotionValueEvent,
   useMotionTemplate,
+  type MotionValue,
 } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import slideCoaching from "@/assets/slide-coaching.jpg";
@@ -114,8 +114,8 @@ function SlidePanel({
   range,
 }: {
   slide: Slide;
-  sectionProgress: ReturnType<typeof useScroll>["scrollYProgress"];
-  range: [number, number, number]; // enter, center, exit (0-1)
+  sectionProgress: MotionValue<number>;
+  range: [number, number, number];
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { sx, sy, handleMove } = useCursorSpotlight(ref);
@@ -242,7 +242,7 @@ function MaskLine({ text, highlight = false }: { text: string; highlight?: boole
 }
 
 /* ---------- Tech slide floating data overlay ---------- */
-function TechOverlay({ local }: { local: ReturnType<typeof useTransform<number, number>> }) {
+function TechOverlay({ local }: { local: MotionValue<number> }) {
   const o = useTransform(local, [0.1, 0.5, 0.9], [0, 1, 0.5]);
   return (
     <motion.div style={{ opacity: o }} className="pointer-events-none absolute inset-0">
@@ -272,16 +272,14 @@ function TechOverlay({ local }: { local: ReturnType<typeof useTransform<number, 
 /* ---------- Cricket Pitch Progress ---------- */
 function PitchProgress({
   progress,
-  active,
 }: {
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
-  active: boolean;
+  progress: MotionValue<number>;
 }) {
   const batsmanX = useTransform(progress, [0.02, 0.98], ["0%", "100%"]);
   return (
     <motion.div
-      initial={false}
-      animate={{ opacity: active ? 1 : 0, y: active ? 0 : 30 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="pointer-events-none fixed bottom-6 left-1/2 z-40 w-[min(560px,86vw)] -translate-x-1/2"
     >
