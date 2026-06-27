@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/Hero";
+import Academy from "@/components/Academy";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,13 +25,10 @@ function Index() {
   return (
     <main className="bg-ink text-foreground">
       <Hero />
-      {/* Placeholder so scroll cue has somewhere to go */}
-      <section className="min-h-[60vh] border-t border-white/5 bg-ink px-6 py-32">
+      <Academy />
+      <section className="min-h-[40vh] border-t border-white/5 bg-ink px-6 py-24">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Phase 1 — Hero complete</p>
-          <h2 className="text-display mt-4 text-5xl text-foreground sm:text-7xl">
-            The rest of the journey<br />awaits in <span className="text-gold-gradient">Phase 2</span>.
-          </h2>
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Next — Programs</p>
         </div>
       </section>
     </main>
