@@ -335,18 +335,8 @@ export default function Academy() {
   // 4 slides + a small entry/exit easing
   const trackX = useTransform(smoothProgress, [0, 1], ["0%", "-75%"]);
 
-  // Track whether we're in the pinned section to show pitch progress
-  const activeMV = useMotionValue(false as unknown as number);
-  const inView = useRef(false);
-  const force = useMotionValue(0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const next = v > 0.001 && v < 0.999;
-    if (next !== inView.current) {
-      inView.current = next;
-      force.set(force.get() + 1);
-      activeMV.set(next ? 1 : 0);
-    }
-  });
+
+
 
   // Per-slide window ranges (4 slides)
   const ranges: [number, number, number][] = [
