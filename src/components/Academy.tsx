@@ -401,7 +401,7 @@ export default function Academy() {
           ))}
         </motion.div>
 
-        <PitchProgress progress={scrollYProgress} active={true} />
+        <PitchProgress progress={scrollYProgress} />
       </div>
     </section>
   );
