@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/Hero";
 import Academy from "@/components/Academy";
+import Founder from "@/components/Founder";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,11 +27,7 @@ function Index() {
     <main className="bg-ink text-foreground">
       <Hero />
       <Academy />
-      <section className="min-h-[40vh] border-t border-white/5 bg-ink px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Next — Programs</p>
-        </div>
-      </section>
+      <Founder />
     </main>
   );
 }
