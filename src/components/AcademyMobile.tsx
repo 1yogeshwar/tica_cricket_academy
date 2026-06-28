@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from "react";
-import { motion, useScroll, useTransform, useSpring, type MotionValue } from "framer-motion";
+import { motion, useTransform, useSpring, useMotionValue, type MotionValue } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import slideCoaching from "@/assets/slide-coaching.jpg";
 import slideFacilities from "@/assets/slide-facilities.jpg";
