@@ -64,7 +64,7 @@ export default function Founder() {
       ref={sectionRef}
       id="founder"
       aria-label="The Founder"
-      className="relative overflow-hidden bg-ink py-32 sm:py-40"
+      className="relative overflow-hidden bg-ink py-20 sm:py-32 lg:py-40"
     >
       {/* Top fade from previous section */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink to-transparent" />
@@ -98,20 +98,20 @@ export default function Founder() {
         </svg>
       </motion.div>
 
-      <div className="relative mx-auto max-w-[1400px] px-6 sm:px-10 lg:px-16">
+      <div className="relative mx-auto max-w-[1400px] px-5 sm:px-10 lg:px-16">
         {/* Kicker */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8 }}
-          className="mb-16 flex items-center gap-4 text-[11px] uppercase tracking-[0.45em] text-[color:var(--gold-soft)]"
+          className="mb-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-[color:var(--gold-soft)] sm:mb-16 sm:gap-4 sm:text-[11px] sm:tracking-[0.45em]"
         >
           <span className="h-px w-12 bg-[color:var(--gold)]/60" />
           Meet The Mentor
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-20">
           {/* Portrait */}
           <div className="lg:col-span-5">
             <div ref={portraitRef} className="relative">
@@ -129,7 +129,7 @@ export default function Founder() {
                   height={1600}
                   loading="lazy"
                   style={{ y: portraitY, scale: portraitScale }}
-                  className="h-[70vh] min-h-[520px] w-full object-cover"
+                  className="h-[68svh] min-h-[420px] w-full object-cover sm:h-[70vh] sm:min-h-[520px]"
                 />
                 {/* warm grade */}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
@@ -141,14 +141,14 @@ export default function Founder() {
                   }}
                 />
                 {/* Name plate */}
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                  <p className="text-[10px] uppercase tracking-[0.4em] text-[color:var(--gold-soft)]">
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                  <p className="text-[10px] uppercase tracking-[0.35em] text-[color:var(--gold-soft)] sm:tracking-[0.4em]">
                     Founder & Head Coach
                   </p>
-                  <h3 className="text-display mt-2 text-4xl text-foreground sm:text-5xl">
+                  <h3 className="text-display mt-2 text-3xl text-foreground sm:text-5xl">
                     R. Terminator
                   </h3>
-                  <p className="mt-2 text-sm text-white/55">NIS Certified · 20+ years</p>
+                  <p className="mt-1.5 text-xs text-white/55 sm:mt-2 sm:text-sm">NIS Certified · 20+ years</p>
                 </div>
               </motion.div>
 
@@ -185,7 +185,7 @@ export default function Founder() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="mt-8 max-w-xl text-base leading-relaxed text-white/65 sm:text-lg"
+              className="mt-6 max-w-xl text-[15px] leading-relaxed text-white/65 sm:mt-8 sm:text-lg"
             >
               For over two decades, the academy has been led by a coach whose philosophy is simple —
               technique can be taught, but character must be built. Every session is designed to forge
@@ -193,14 +193,14 @@ export default function Founder() {
             </motion.p>
 
             {/* Milestones timeline */}
-            <div className="mt-14">
+            <div className="mt-10 sm:mt-14">
               {MILESTONES.map((m, i) => (
                 <Milestone key={m.title} m={m} i={i} />
               ))}
             </div>
 
             {/* Quote */}
-            <div className="mt-12 border-l-2 border-[color:var(--gold)]/60 pl-6 sm:pl-8">
+            <div className="mt-10 border-l-2 border-[color:var(--gold)]/60 pl-5 sm:mt-12 sm:pl-8">
               <p className="text-[10px] uppercase tracking-[0.4em] text-[color:var(--gold-soft)]">
                 Coaching Philosophy
               </p>
@@ -241,19 +241,19 @@ export default function Founder() {
         </div>
 
         {/* Trust panels */}
-        <div className="mt-28">
+        <div className="mt-20 sm:mt-28">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mb-10 flex items-center gap-4 text-[11px] uppercase tracking-[0.45em] text-[color:var(--gold-soft)]"
+            className="mb-8 flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-[color:var(--gold-soft)] sm:mb-10 sm:gap-4 sm:text-[11px] sm:tracking-[0.45em]"
           >
-            <span className="h-px w-12 bg-[color:var(--gold)]/60" />
+            <span className="h-px w-10 bg-[color:var(--gold)]/60 sm:w-12" />
             Why Parents & Players Trust Us
           </motion.p>
 
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
             {TRUST.map((t, i) => (
               <motion.div
                 key={t.label}
@@ -262,15 +262,16 @@ export default function Founder() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.8, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-[color:var(--gold)]/40"
+                whileTap={{ scale: 0.97 }}
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl transition-colors hover:border-[color:var(--gold)]/40 active:border-[color:var(--gold)]/40 sm:p-5"
                 style={{
                   animation: `breathe ${8 + i}s ease-in-out ${i * 0.4}s infinite`,
                 }}
               >
-                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[color:var(--gold)]/10 blur-2xl transition-opacity duration-500 group-hover:bg-[color:var(--gold)]/30" />
-                <t.icon className="relative h-6 w-6 text-[color:var(--gold)]" />
-                <p className="relative mt-4 text-sm font-medium text-foreground">{t.label}</p>
-                <p className="relative mt-1 text-xs text-white/50">{t.note}</p>
+                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[color:var(--gold)]/10 blur-2xl transition-opacity duration-500 group-hover:bg-[color:var(--gold)]/30 group-active:bg-[color:var(--gold)]/30" />
+                <t.icon className="relative h-5 w-5 text-[color:var(--gold)] sm:h-6 sm:w-6" />
+                <p className="relative mt-3 text-[13px] font-medium text-foreground sm:mt-4 sm:text-sm">{t.label}</p>
+                <p className="relative mt-1 text-[11px] text-white/50 sm:text-xs">{t.note}</p>
               </motion.div>
             ))}
           </div>
