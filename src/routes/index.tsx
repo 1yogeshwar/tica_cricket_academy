@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/Hero";
-import Academy from "@/components/Academy";
+import AcademySection from "@/components/AcademySection";
 import Founder from "@/components/Founder";
 
 export const Route = createFileRoute("/")({
@@ -26,7 +26,7 @@ function Index() {
   return (
     <main className="bg-ink text-foreground">
       <Hero />
-      <Academy />
+      <AcademySection />
       <Founder />
     </main>
   );
