@@ -130,7 +130,7 @@ function MobilePanel({
 
         {slide.tone === "victory" && (
           <a
-            href="#founder"
+            href="#coaches"
             className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-gradient-to-br from-[oklch(0.86_0.12_80)] to-[oklch(0.68_0.17_50)] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink shadow-[0_18px_45px_-15px_oklch(0.78_0.14_72/0.9)]"
           >
             Begin Your Journey
@@ -229,8 +229,9 @@ export default function AcademyMobile() {
 
   return (
     <section
+      id="academy"
       aria-label="Inside the Academy"
-      className="relative h-[100svh] w-full overflow-hidden bg-ink"
+      className="relative h-[100svh] w-full overflow-hidden bg-ink scroll-mt-28"
     >
       {/* top kicker */}
       <div className="pointer-events-none absolute left-5 top-5 z-30 flex items-center gap-2 text-[9px] uppercase tracking-[0.4em] text-white/45">

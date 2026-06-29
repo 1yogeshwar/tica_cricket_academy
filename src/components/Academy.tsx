@@ -351,9 +351,10 @@ export default function Academy() {
 
   return (
     <section
+      id="academy"
       ref={containerRef}
       aria-label="Inside the Academy"
-      className="relative bg-ink"
+      className="relative bg-ink scroll-mt-28"
       style={{ height: "500vh" }} // 4 slides + 1 viewport for smooth entry/exit
     >
       <div className="sticky top-0 h-screen w-screen overflow-hidden">

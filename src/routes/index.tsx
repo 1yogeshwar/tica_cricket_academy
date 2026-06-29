@@ -1,7 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/Hero";
 import AcademySection from "@/components/AcademySection";
-import Founder from "@/components/Founder";
+import Mentors from "@/components/Mentors";
+// import Programs from "@/components/Program";
+import Facility from "@/components/Facility"
+import Achievement from "@/components/Achievement"
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,10 +27,13 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="bg-ink text-foreground">
+    <main className="bg-ink  text-foreground antialiased">
       <Hero />
       <AcademySection />
-      <Founder />
+      <Mentors />
+      {/* <Programs /> */}
+      <Facility />
+      <Achievement />
     </main>
   );
 }
