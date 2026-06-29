@@ -5,6 +5,9 @@ import Mentors from "@/components/Mentors";
 // import Programs from "@/components/Program";
 import Facility from "@/components/Facility"
 import Achievement from "@/components/Achievement"
+import Courses from "@/components/courses";
+import Testimonials from "@/components/Testimonials";
+import Footer from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,7 +36,10 @@ function Index() {
       <Mentors />
       {/* <Programs /> */}
       <Facility />
-      <Achievement />
+      <Courses />
+          <Achievement />
+          <Testimonials />
+          <Footer />
     </main>
   );
 }
