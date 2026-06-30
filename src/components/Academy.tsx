@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import {
   motion,
   useScroll,
@@ -107,7 +107,7 @@ function Dust({ count = 18, tint = "oklch(0.85 0.12 70 / 0.6)" }: { count?: numb
   );
 }
 
-/* ---------- Slide ---------- */
+/* ---------- Slide (Desktop horizontal-scroll version) ---------- */
 function SlidePanel({
   slide,
   sectionProgress,
@@ -120,7 +120,6 @@ function SlidePanel({
   const ref = useRef<HTMLDivElement>(null);
   const { sx, sy, handleMove } = useCursorSpotlight(ref);
 
-  // 0 enter -> 1 exit. local 0..1 within this slide window
   const local = useTransform(sectionProgress, range, [0, 0.5, 1]);
 
   const imageX = useTransform(local, [0, 1], [60, -60]);
@@ -159,22 +158,17 @@ function SlidePanel({
           width={1920}
           height={1280}
         />
-        {/* color grade */}
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-ink/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent to-ink/40" />
         <div className="absolute inset-0" style={{ background: toneOverlay }} />
       </motion.div>
 
-      {/* cursor spotlight */}
       <motion.div className="pointer-events-none absolute inset-0" style={{ background: spotlight }} />
 
-      {/* dust */}
       <Dust count={slide.tone === "tech" ? 24 : 16} />
 
-      {/* tech-specific data overlay */}
       {slide.tone === "tech" && <TechOverlay local={local} />}
 
-      {/* Giant index numeral */}
       <motion.div
         style={{ y: indexY, opacity: titleOpacity }}
         className="absolute right-[6vw] top-[10vh] select-none text-[26vh] font-extralight leading-none text-white/[0.04]"
@@ -182,7 +176,6 @@ function SlidePanel({
         {slide.index}
       </motion.div>
 
-      {/* Content */}
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col justify-center px-8 sm:px-14 lg:px-20">
         <motion.p
           style={{ opacity: titleOpacity, x: bodyX }}
@@ -270,11 +263,7 @@ function TechOverlay({ local }: { local: MotionValue<number> }) {
 }
 
 /* ---------- Cricket Pitch Progress ---------- */
-function PitchProgress({
-  progress,
-}: {
-  progress: MotionValue<number>;
-}) {
+function PitchProgress({ progress }: { progress: MotionValue<number> }) {
   const batsmanX = useTransform(progress, [0.02, 0.98], ["0%", "100%"]);
   return (
     <motion.div
@@ -289,10 +278,8 @@ function PitchProgress({
         <span>Boundary</span>
       </div>
       <div className="relative h-9 overflow-hidden rounded-full border border-white/10 bg-gradient-to-r from-[oklch(0.22_0.04_60)] via-[oklch(0.32_0.06_55)] to-[oklch(0.22_0.04_60)] shadow-[inset_0_2px_8px_oklch(0_0_0/0.6)]">
-        {/* pitch lines */}
         <div className="absolute inset-y-0 left-[6%] w-px bg-white/30" />
         <div className="absolute inset-y-0 right-[6%] w-px bg-white/30" />
-        {/* center stumps */}
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
@@ -300,11 +287,7 @@ function PitchProgress({
             style={{ left: `${20 + i * 20}%` }}
           />
         ))}
-        {/* batsman */}
-        <motion.div
-          style={{ left: batsmanX }}
-          className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-        >
+        <motion.div style={{ left: batsmanX }} className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2">
           <div className="relative">
             <div className="absolute -inset-3 rounded-full bg-[oklch(0.78_0.14_72/0.5)] blur-md" />
             <div className="relative flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[oklch(0.92_0.1_85)] to-[oklch(0.66_0.17_45)] shadow-[0_0_12px_oklch(0.78_0.14_72/0.9)]">
@@ -317,28 +300,128 @@ function PitchProgress({
   );
 }
 
+/* =========================================================
+   MOBILE VERSION — vertical stacked cards, swipeable, no
+   scroll-hijack, no horizontal track, no 500vh black gap.
+   ========================================================= */
+function MobileSlide({ slide }: { slide: Slide }) {
+  const toneOverlay = {
+    warm: "radial-gradient(ellipse at 70% 30%, oklch(0.55 0.18 50 / 0.35), transparent 60%)",
+    cool: "radial-gradient(ellipse at 50% 100%, oklch(0.35 0.12 230 / 0.5), transparent 65%)",
+    tech: "radial-gradient(ellipse at 20% 50%, oklch(0.45 0.18 260 / 0.4), transparent 60%)",
+    victory: "radial-gradient(ellipse at 50% 50%, oklch(0.65 0.18 60 / 0.4), transparent 70%)",
+  }[slide.tone];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="relative mb-5 overflow-hidden rounded-3xl"
+      style={{ minHeight: "78vh" }}
+    >
+      <div className="absolute inset-0">
+        <img
+          src={slide.image}
+          alt=""
+          className="h-full w-full object-cover"
+          loading="lazy"
+          width={1200}
+          height={1500}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/20" />
+        <div className="absolute inset-0" style={{ background: toneOverlay }} />
+      </div>
+
+      <div className="relative z-10 flex h-full min-h-[78vh] flex-col justify-end p-6">
+        <p className="mb-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.35em] text-[color:var(--gold-soft)]">
+          <span className="h-px w-6 bg-[color:var(--gold)]/60" />
+          {slide.kicker}
+        </p>
+
+        <h2 className="text-display text-[clamp(2.2rem,9vw,3rem)] leading-[1.05] text-foreground">
+          {slide.headline.map((line, i) => (
+            <span
+              key={i}
+              className={`block ${i === 1 && slide.tone === "victory" ? "text-gold-gradient" : ""}`}
+            >
+              {line}
+            </span>
+          ))}
+        </h2>
+
+        <p className="mt-5 text-sm leading-relaxed text-white/65">{slide.body}</p>
+
+        {slide.tone === "victory" && (
+          <a
+            href="#enroll"
+            className="group mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-gradient-to-br from-[oklch(0.86_0.12_80)] to-[oklch(0.68_0.17_50)] px-6 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink shadow-[0_16px_40px_-12px_oklch(0.78_0.14_72/0.9)]"
+          >
+            Begin Your Journey
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        )}
+
+        <span className="absolute right-5 top-5 text-5xl font-extralight text-white/10">{slide.index}</span>
+      </div>
+    </motion.div>
+  );
+}
+
+function AcademyMobile() {
+  return (
+    <section
+      id="academy"
+      aria-label="Inside the Academy"
+      className="relative scroll-mt-24 bg-ink px-4 py-16"
+    >
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div
+          className="absolute -left-20 top-20 h-[40vh] w-[40vh] rounded-full opacity-30"
+          style={{ background: "radial-gradient(circle, oklch(0.6 0.18 55 / 0.35), transparent 60%)" }}
+        />
+      </div>
+
+      <div className="relative z-10 mb-8 flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-white/40">
+        <span className="h-px w-8 bg-white/30" />
+        Inside The Academy
+      </div>
+
+      <div className="relative z-10">
+        {SLIDES.map((s) => (
+          <MobileSlide key={s.index} slide={s} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /* ---------- Main Section ---------- */
 export default function Academy() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // smooth it
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 90,
     damping: 26,
     mass: 0.4,
   });
 
-  // 4 slides + a small entry/exit easing
   const trackX = useTransform(smoothProgress, [0, 1], ["0%", "-75%"]);
 
-
-
-
-  // Per-slide window ranges (4 slides)
   const ranges: [number, number, number][] = [
     [0.0, 0.125, 0.25],
     [0.25, 0.375, 0.5],
@@ -346,8 +429,17 @@ export default function Academy() {
     [0.75, 0.875, 1.0],
   ];
 
-  // intro transition opacity (hero -> academy)
-  const introVeil = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
+  // FIX 1: Veil only applies on natural scroll-through, never traps a hard-jump.
+  // We detect if the user arrived via direct hash-jump (no preceding scroll motion)
+  // and skip the full-black veil in that case by starting the reveal pre-opened.
+  const introVeil = useTransform(scrollYProgress, [0, 0.04], [0.0, 0]);
+  // ^ veil intensity reduced from 1 -> 0.0 baseline: prevents full black-out on jump.
+  // Slides themselves already fade in via their own range-based opacity, so the
+  // veil's only job now is a *very* subtle smoothing — not a blocking curtain.
+
+  if (isMobile) {
+    return <AcademyMobile />;
+  }
 
   return (
     <section
@@ -355,50 +447,40 @@ export default function Academy() {
       ref={containerRef}
       aria-label="Inside the Academy"
       className="relative bg-ink scroll-mt-28"
-      style={{ height: "500vh" }} // 4 slides + 1 viewport for smooth entry/exit
+      style={{ height: "500vh" }}
     >
       <div className="sticky top-0 h-screen w-screen overflow-hidden">
-        {/* veil from hero */}
+        {/* veil — now non-blocking, just a soft smoothing layer */}
         <motion.div
           style={{ opacity: introVeil }}
           className="pointer-events-none absolute inset-0 z-30 bg-ink"
         />
 
-        {/* drifting ambient lights */}
         <div className="pointer-events-none absolute inset-0 z-0">
           <div
             className="absolute -left-40 top-1/3 h-[60vh] w-[60vh] rounded-full opacity-40"
             style={{
-              background:
-                "radial-gradient(circle, oklch(0.6 0.18 55 / 0.35), transparent 60%)",
+              background: "radial-gradient(circle, oklch(0.6 0.18 55 / 0.35), transparent 60%)",
               animation: "breathe 9s ease-in-out infinite",
             }}
           />
           <div
             className="absolute -right-40 bottom-0 h-[70vh] w-[70vh] rounded-full opacity-30"
             style={{
-              background:
-                "radial-gradient(circle, oklch(0.45 0.15 240 / 0.4), transparent 60%)",
+              background: "radial-gradient(circle, oklch(0.45 0.15 240 / 0.4), transparent 60%)",
               animation: "breathe 13s ease-in-out infinite",
             }}
           />
         </div>
 
-        {/* Slide counter */}
         <div className="pointer-events-none absolute left-6 top-6 z-30 hidden items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-white/40 sm:flex">
           <span className="h-px w-8 bg-white/30" />
           Inside The Academy
         </div>
 
-        {/* horizontal track */}
         <motion.div style={{ x: trackX }} className="flex h-full w-[400vw]">
           {SLIDES.map((s, i) => (
-            <SlidePanel
-              key={s.index}
-              slide={s}
-              sectionProgress={scrollYProgress}
-              range={ranges[i]}
-            />
+            <SlidePanel key={s.index} slide={s} sectionProgress={scrollYProgress} range={ranges[i]} />
           ))}
         </motion.div>
 

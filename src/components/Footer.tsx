@@ -28,7 +28,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const navigationLinks = [
   { label: "Home", id: "top" },
   { label: "Academy", id: "academy" },
-  { label: "Programs", id: "courses" },
+  { label: "Programs", id: "programs" },
   { label: "Mentors", id: "coaches" },
   { label: "Facilities", id: "facilities" },
   { label: "Gallery", id: "stories" },

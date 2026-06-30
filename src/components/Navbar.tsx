@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
@@ -12,16 +12,16 @@ const NAV_ITEMS = [
   { label: "Stories",    id: "stories"    },
 ];
 
-const SCROLL_THRESHOLD   = 80;   // px before glass kicks in
-const HIDE_THRESHOLD     = 60;   // px scrolled down before hiding
-const SHOW_THRESHOLD     = 10;   // px scrolled up before showing
+const SCROLL_THRESHOLD = 80;
+const HIDE_THRESHOLD   = 60;
+const SHOW_THRESHOLD   = 10;
 
 // ─── SMOOTH SCROLL ───────────────────────────────────────────────────────────
 
 function scrollToSection(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  const offset = 80; // navbar height + padding
+  const offset = 80;
   const top = el.getBoundingClientRect().top + window.scrollY - offset;
   window.scrollTo({ top, behavior: "smooth" });
 }
@@ -68,7 +68,6 @@ function useActiveSection() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // Pick the entry with the greatest intersection ratio
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
@@ -97,20 +96,19 @@ function EnrollButton({ compact = false }: { compact?: boolean }) {
       whileTap={{ scale: 0.96, y: 0 }}
       transition={{ type: "spring", stiffness: 340, damping: 22 }}
       onClick={() => scrollToSection("programs")}
-      className="relative overflow-hidden rounded-full text-ink font-semibold uppercase tracking-wider focus:outline-none"
+      className="relative shrink-0 overflow-hidden rounded-full text-ink font-semibold uppercase tracking-wider focus:outline-none whitespace-nowrap"
       style={{
         background: "var(--gradient-gold)",
         fontSize: compact ? "10px" : "11px",
-        padding: compact ? "7px 18px" : "8px 22px",
+        padding: compact ? "7px 16px" : "8px 20px",
       }}
     >
-      {/* Shimmer on hover */}
       <motion.span
         className="pointer-events-none absolute inset-0 -translate-x-full"
         style={{
           background: "linear-gradient(105deg, transparent 40%, oklch(1 0 0 / 0.18) 50%, transparent 60%)",
         }}
-        whileHover={{ x: ["−100%", "200%"] }}
+        whileHover={{ x: ["-100%", "200%"] }}
         transition={{ duration: 0.55, ease: "easeInOut" }}
       />
       <span className="relative">Enroll</span>
@@ -132,13 +130,12 @@ function NavLink({
   return (
     <motion.button
       onClick={onClick}
-      className="relative rounded-full px-4 py-2 text-sm focus:outline-none"
+      className="relative shrink-0 rounded-full px-3.5 py-2 text-sm focus:outline-none lg:px-4"
       style={{ color: isActive ? "var(--foreground)" : "var(--muted-foreground)" }}
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.97 }}
       transition={{ type: "spring", stiffness: 380, damping: 26 }}
     >
-      {/* Hover pill */}
       <motion.span
         className="absolute inset-0 rounded-full"
         style={{ background: "oklch(1 0 0 / 0.05)" }}
@@ -147,7 +144,6 @@ function NavLink({
         transition={{ duration: 0.18 }}
       />
 
-      {/* Active pill (shared layout) */}
       {isActive && (
         <motion.span
           layoutId="nav-active-pill"
@@ -161,7 +157,7 @@ function NavLink({
       )}
 
       <motion.span
-        className="relative z-10 transition-colors duration-200"
+        className="relative z-10 whitespace-nowrap transition-colors duration-200"
         animate={{ color: isActive ? "var(--foreground)" : "var(--muted-foreground)" }}
         whileHover={{ color: "var(--foreground)" }}
       >
@@ -182,7 +178,6 @@ function MobileMenu({
   onClose: () => void;
   activeId: string;
 }) {
-  // Lock body scroll
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -201,15 +196,15 @@ function MobileMenu({
           animate={{ opacity: 1, backdropFilter: "blur(24px)" }}
           exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
           transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-40 flex flex-col"
-          style={{ background: "oklch(0.06 0.005 250 / 0.92)" }}
+          className="fixed inset-0 z-[60] flex flex-col"
+          style={{ background: "oklch(0.06 0.005 250 / 0.96)" }}
           onClick={onClose}
         >
           {/* Top bar */}
           <div className="flex items-center justify-between px-5 pt-6 pb-4">
             <a href="#top" className="flex items-center gap-2.5" onClick={onClose}>
               <div
-                className="grid h-9 w-9 place-items-center rounded-full"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full"
                 style={{ background: "var(--gradient-gold)" }}
               >
                 <span className="text-base font-bold text-ink">T</span>
@@ -222,14 +217,13 @@ function MobileMenu({
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/10"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10"
               aria-label="Close menu"
             >
               <X className="h-4 w-4 text-white/70" />
             </motion.button>
           </div>
 
-          {/* Divider */}
           <div className="mx-5 h-px bg-white/[0.06]" />
 
           {/* Menu items */}
@@ -265,7 +259,6 @@ function MobileMenu({
             ))}
           </nav>
 
-          {/* Bottom CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -301,52 +294,46 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Google Font for mobile menu */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap');`}</style>
 
       <LayoutGroup>
         <motion.header
           initial={{ y: -56, opacity: 0 }}
-          animate={{
-            y: visible ? 0 : -88,
-            opacity: visible ? 1 : 0,
-          }}
+          animate={{ y: visible ? 0 : -88, opacity: visible ? 1 : 0 }}
           transition={{
             y:       { type: "spring", stiffness: 260, damping: 28 },
             opacity: { duration: 0.22, ease: "easeOut" },
           }}
-          // Mount fade-in on first load
-          style={{ "--initial-delay": "2.2s" } as React.CSSProperties}
-          className="fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:top-6"
+          className="fixed inset-x-0 top-3 z-50 px-3 sm:top-6 sm:px-4"
         >
-          {/* Outer wrapper — drives glass intensity via scrolled */}
+          {/* Outer wrapper — constrained, centered, never overflows */}
           <motion.div
             animate={{
-              paddingTop:    scrolled ? "8px"  : "10px",
-              paddingBottom: scrolled ? "8px"  : "10px",
+              paddingTop:    scrolled ? "8px"  : "9px",
+              paddingBottom: scrolled ? "8px"  : "9px",
             }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="flex w-full max-w-6xl items-center justify-between rounded-full px-4 sm:px-5"
+            className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 overflow-hidden rounded-full px-3 sm:gap-3 sm:px-5"
             style={{
               backdropFilter:  scrolled ? "blur(22px) saturate(160%)" : "blur(10px) saturate(120%)",
               WebkitBackdropFilter: scrolled ? "blur(22px) saturate(160%)" : "blur(10px) saturate(120%)",
               background:      scrolled
-                ? "oklch(0.09 0.005 250 / 0.82)"
-                : "oklch(0.09 0.005 250 / 0.35)",
+                ? "oklch(0.09 0.005 250 / 0.86)"
+                : "oklch(0.09 0.005 250 / 0.4)",
               border:          scrolled
                 ? "1px solid oklch(1 0 0 / 0.1)"
-                : "1px solid oklch(1 0 0 / 0.055)",
+                : "1px solid oklch(1 0 0 / 0.06)",
               boxShadow:       scrolled
                 ? "0 24px 64px -20px oklch(0 0 0 / 0.55), inset 0 0.5px 0 oklch(1 0 0 / 0.08)"
                 : "0 8px 32px -12px oklch(0 0 0 / 0.3)",
               transition: "background 0.4s ease, border 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease",
             }}
           >
-            {/* Logo */}
+            {/* Logo — always shrink-0, never wraps */}
             <motion.a
               href="#top"
               onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-              className="flex items-center gap-2.5 focus:outline-none"
+              className="flex shrink-0 items-center gap-2 focus:outline-none sm:gap-2.5"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 380, damping: 26 }}
@@ -354,25 +341,29 @@ export default function Navbar() {
               <motion.div
                 animate={{ scale: scrolled ? 1.06 : 1 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="relative grid h-8 w-8 place-items-center rounded-full sm:h-9 sm:w-9"
+                className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full"
                 style={{ background: "var(--gradient-gold)" }}
               >
-                <span className="text-display text-base text-ink font-bold">T</span>
+                <span className="text-display text-sm font-bold text-ink sm:text-base">T</span>
                 <span
                   className="absolute inset-0 rounded-full blur-md -z-10 opacity-50"
                   style={{ background: "var(--gradient-gold)" }}
                 />
               </motion.div>
-              <div className="hidden sm:block leading-tight">
+              {/* Wordmark — hidden below sm so logo+hamburger never crowd on tiny screens */}
+              <div className="hidden leading-tight sm:block">
                 <div className="text-display text-[15px] text-foreground">TICA</div>
-                <div className="text-[9px] uppercase tracking-[0.25em] text-white/40">
+                <div className="text-[9px] uppercase tracking-[0.25em] text-white/40 whitespace-nowrap">
                   Cricket Academy
                 </div>
               </div>
             </motion.a>
 
-            {/* Desktop nav */}
-            <nav className="hidden items-center gap-0.5 md:flex" aria-label="Primary navigation">
+            {/* Desktop nav — only renders/lays out at lg+, fully hidden below */}
+            <nav
+              className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex"
+              aria-label="Primary navigation"
+            >
               {NAV_ITEMS.map((item) => (
                 <NavLink
                   key={item.id}
@@ -383,18 +374,18 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
+            {/* Actions — always shrink-0, right aligned */}
+            <div className="flex shrink-0 items-center gap-2">
               <div className="hidden sm:block">
                 <EnrollButton compact={scrolled} />
               </div>
 
-              {/* Mobile hamburger */}
+              {/* Hamburger — visible below lg (matches nav breakpoint) */}
               <motion.button
                 whileTap={{ scale: 0.91 }}
                 transition={{ type: "spring", stiffness: 380, damping: 22 }}
                 onClick={() => setMobileOpen(true)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] md:hidden focus:outline-none"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.04] lg:hidden focus:outline-none"
                 aria-label="Open menu"
                 aria-expanded={mobileOpen}
               >
@@ -405,7 +396,6 @@ export default function Navbar() {
         </motion.header>
       </LayoutGroup>
 
-      {/* Mobile full-screen menu */}
       <MobileMenu
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}

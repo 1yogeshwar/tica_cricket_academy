@@ -28,7 +28,7 @@ const TESTIMONIALS = [
     id: "t3",
     name: "Rahul Verma",
     role: "Parent of Foundation Student",
-    quote: "My son transformed completely in 6 months. Not just technically — his discipline, focus, and respect for the game changed entirely.",
+    quote: "My son transformed completely in 6 months — not just technically, but his discipline, focus, and respect for the game.",
     accent: "#9ED420",
     accentRgb: "158,212,32",
     size: "small" as const,
@@ -48,7 +48,7 @@ const TESTIMONIALS = [
     id: "t5",
     name: "Dev Patel",
     role: "Holiday Camp Attendee",
-    quote: "The two weeks felt like six months of practice. The intensity is real. The fun is realer. I came back the next holiday too.",
+    quote: "Two weeks felt like six months of practice. The intensity is real, and the fun is realer. I came back the next holiday too.",
     accent: "#F0C830",
     accentRgb: "240,200,48",
     size: "small" as const,
@@ -87,15 +87,26 @@ const Particles = memo(() => {
 Particles.displayName = "Particles";
 
 /* ─── Testimonial card ─── */
-function TestimonialCard({ t, style }: { t: typeof TESTIMONIALS[0]; style: React.CSSProperties }) {
+function TestimonialCard({
+  t,
+  style,
+  index,
+}: {
+  t: typeof TESTIMONIALS[0];
+  style: React.CSSProperties;
+  index: number;
+}) {
   const [hovered, setHovered] = useState(false);
   const isLarge = t.size === "large";
-  const isMedium = t.size === "medium";
 
   return (
     <motion.div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      initial={{ opacity: 0, y: 28, scale: 0.96, filter: "blur(6px)" }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.8, delay: index * 0.09, ease: [0.22, 1, 0.36, 1] }}
       className="absolute rounded-2xl overflow-hidden select-none"
       style={{
         ...style,
@@ -118,26 +129,57 @@ function TestimonialCard({ t, style }: { t: typeof TESTIMONIALS[0]; style: React
       <div className="absolute inset-x-0 top-0 h-px"
         style={{ background: `linear-gradient(to right, transparent, rgba(${t.accentRgb},${hovered ? 0.8 : 0.35}), transparent)`, transition: "opacity 0.4s" }} />
 
-      <div className="p-5 md:p-6 h-full flex flex-col justify-between">
-        {/* Quote mark */}
-        <div className="mb-3 font-serif text-4xl leading-none" style={{ color: `rgba(${t.accentRgb},0.25)`, fontFamily: "Georgia, serif" }}>"</div>
+      {/* Sheen sweep on hover */}
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        initial={false}
+        animate={hovered ? { x: ["-120%", "220%"] } : { x: "-120%" }}
+        transition={{ duration: 0.85, ease: "easeInOut" }}
+        style={{
+          background: `linear-gradient(105deg, transparent 40%, rgba(${t.accentRgb},0.06) 50%, transparent 60%)`,
+        }}
+      />
 
-        {/* Quote */}
-        <p className={`leading-relaxed mb-4 flex-1 ${isLarge ? "text-sm md:text-base" : "text-xs md:text-sm"}`}
-          style={{ color: hovered ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.45)", transition: "color 0.4s" }}>
+      {/* FIX: padding-bottom safe-area + flex column with min-h-0 so text never clips;
+          quote uses flex-1 + proper line-clamp instead of being squeezed by fixed card height */}
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        {/* Quote mark */}
+        <div
+          className="mb-2 font-serif text-3xl md:text-4xl leading-none flex-shrink-0"
+          style={{ color: `rgba(${t.accentRgb},0.3)`, fontFamily: "Georgia, serif" }}
+        >
+          "
+        </div>
+
+        {/* Quote — flex-1 with min-h-0 lets it size to available space without
+            ever pushing the author row off the visible card area */}
+        <p
+          className={`leading-relaxed mb-4 flex-1 min-h-0 ${isLarge ? "text-sm md:text-[15px]" : "text-xs md:text-sm"}`}
+          style={{
+            color: hovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.48)",
+            transition: "color 0.4s",
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: isLarge ? 7 : 5,
+          }}
+        >
           {t.quote}
         </p>
 
-        {/* Author */}
-        <div className="flex items-center gap-3 mt-auto">
-          {/* Avatar */}
-          <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{ background: `rgba(${t.accentRgb},0.15)`, border: `1px solid rgba(${t.accentRgb},0.3)`, color: t.accent }}>
+        {/* Author — flex-shrink-0 guarantees it's always fully visible, never clipped */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <motion.div
+            className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+            style={{ background: `rgba(${t.accentRgb},0.15)`, border: `1px solid rgba(${t.accentRgb},0.3)`, color: t.accent }}
+            animate={{ scale: hovered ? 1.1 : 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {t.initials}
-          </div>
-          <div>
-            <div className="text-xs font-semibold text-white">{t.name}</div>
-            <div className="text-[10px] tracking-wide" style={{ color: `rgba(${t.accentRgb},0.7)` }}>{t.role}</div>
+          </motion.div>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-white truncate">{t.name}</div>
+            <div className="text-[10px] tracking-wide truncate" style={{ color: `rgba(${t.accentRgb},0.7)` }}>{t.role}</div>
           </div>
         </div>
       </div>
@@ -146,14 +188,14 @@ function TestimonialCard({ t, style }: { t: typeof TESTIMONIALS[0]; style: React
 }
 
 /* ─── Floating wall — desktop ─── */
-// Cards placed in a natural overlapping layout
+// Heights increased so quotes have enough room; large cards especially were too short.
 const CARD_POSITIONS: React.CSSProperties[] = [
-  { top: "4%",  left: "0%",  width: "34%", height: "44%" },   // t1 large
-  { top: "10%", left: "36%", width: "24%", height: "34%" },   // t2 medium
-  { top: "8%",  left: "62%", width: "20%", height: "26%" },   // t3 small
-  { top: "50%", left: "2%",  width: "34%", height: "45%" },   // t4 large
-  { top: "52%", left: "38%", width: "20%", height: "26%" },   // t5 small
-  { top: "45%", left: "60%", width: "26%", height: "38%" },   // t6 medium
+  { top: "2%",  left: "0%",  width: "34%", height: "52%" },   // t1 large
+  { top: "6%",  left: "36%", width: "25%", height: "40%" },   // t2 medium
+  { top: "4%",  left: "63%", width: "21%", height: "34%" },   // t3 small
+  { top: "58%", left: "2%",  width: "34%", height: "52%" },   // t4 large
+  { top: "62%", left: "39%", width: "21%", height: "34%" },   // t5 small
+  { top: "44%", left: "61%", width: "27%", height: "48%" },   // t6 medium
 ];
 
 // Ambient float offsets per card
@@ -169,7 +211,6 @@ const FLOAT_VARIANTS = [
 /* ─── Main ─── */
 export default function Testimonials() {
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileIndex, setMobileIndex] = useState(0);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -194,24 +235,26 @@ export default function Testimonials() {
             <div className="h-px w-8" style={{ background: "rgba(58,168,216,0.5)" }} />
             <span className="text-[10px] font-semibold uppercase tracking-[0.5em]" style={{ color: "rgba(58,168,216,0.7)" }}>What Students Say</span>
           </motion.div>
-          <motion.h2 className="font-black leading-[0.88] tracking-tighter text-white"
-            style={{ fontSize: "clamp(2.6rem,5.5vw,5rem)" }}
-            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.1 }}>
-            Voices from<br />
-            <span style={{ WebkitTextStroke: "1px rgba(58,168,216,0.7)", color: "transparent" }}>the Academy</span>
-          </motion.h2>
+          <div className="overflow-hidden">
+            <motion.h2 className="font-black leading-[0.88] tracking-tighter text-white"
+              style={{ fontSize: "clamp(2.6rem,5.5vw,5rem)" }}
+              initial={{ y: "100%" }} whileInView={{ y: 0 }} viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
+              Voices from<br />
+              <span style={{ WebkitTextStroke: "1px rgba(58,168,216,0.7)", color: "transparent" }}>the Academy</span>
+            </motion.h2>
+          </div>
         </div>
 
-        {/* Desktop floating wall */}
+        {/* Desktop floating wall — taller container to give cards real room */}
         {!isMobile && (
-          <motion.div className="relative hidden md:block" style={{ height: 560 }}
+          <motion.div className="relative hidden md:block" style={{ height: 680 }}
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
             {TESTIMONIALS.map((t, i) => (
               <motion.div key={t.id} className="absolute"
                 style={CARD_POSITIONS[i]}
                 animate={{ y: FLOAT_VARIANTS[i].y }}
                 transition={{ duration: FLOAT_VARIANTS[i].duration, repeat: Infinity, ease: "easeInOut", delay: i * 1.2 }}>
-                <TestimonialCard t={t} style={{ position: "relative", width: "100%", height: "100%", inset: "unset" }} />
+                <TestimonialCard t={t} index={i} style={{ position: "relative", width: "100%", height: "100%", inset: "unset" }} />
               </motion.div>
             ))}
           </motion.div>
@@ -220,24 +263,57 @@ export default function Testimonials() {
         {/* Mobile: swipeable stack */}
         {isMobile && (
           <div>
-            <div className="overflow-x-auto flex gap-4 pb-4"
-              style={{ scrollSnapType: "x mandatory", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-              {TESTIMONIALS.map((t) => (
-                <div key={t.id} className="flex-shrink-0" style={{ width: "80vw", scrollSnapAlign: "start" }}>
-                  <div className="rounded-2xl p-5 h-64"
-                    style={{ background: `rgba(255,255,255,0.04)`, border: `1px solid rgba(${t.accentRgb},0.18)`, backdropFilter: "blur(12px)" }}>
-                    <div className="font-serif text-3xl mb-2" style={{ color: `rgba(${t.accentRgb},0.3)`, fontFamily: "Georgia, serif" }}>"</div>
-                    <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>{t.quote}</p>
-                    <div className="flex items-center gap-3">
+            <div className="overflow-x-auto flex gap-4 pb-4 snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+              {TESTIMONIALS.map((t, i) => (
+                <motion.div
+                  key={t.id}
+                  className="flex-shrink-0 snap-start"
+                  style={{ width: "82vw" }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div
+                    className="rounded-2xl p-5 flex flex-col"
+                    style={{
+                      minHeight: "17rem",
+                      background: `rgba(255,255,255,0.04)`,
+                      border: `1px solid rgba(${t.accentRgb},0.18)`,
+                      backdropFilter: "blur(12px)",
+                    }}
+                  >
+                    <div className="font-serif text-3xl mb-2 flex-shrink-0" style={{ color: `rgba(${t.accentRgb},0.3)`, fontFamily: "Georgia, serif" }}>"</div>
+                    <p
+                      className="text-sm leading-relaxed mb-4 flex-1"
+                      style={{
+                        color: "rgba(255,255,255,0.52)",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 6,
+                      }}
+                    >
+                      {t.quote}
+                    </p>
+                    <div className="flex items-center gap-3 flex-shrink-0">
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                         style={{ background: `rgba(${t.accentRgb},0.15)`, color: t.accent }}>{t.initials}</div>
-                      <div>
-                        <div className="text-xs font-semibold text-white">{t.name}</div>
-                        <div className="text-[10px]" style={{ color: `rgba(${t.accentRgb},0.7)` }}>{t.role}</div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-white truncate">{t.name}</div>
+                        <div className="text-[10px] truncate" style={{ color: `rgba(${t.accentRgb},0.7)` }}>{t.role}</div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Swipe hint dots */}
+            <div className="flex justify-center gap-1.5 mt-2">
+              {TESTIMONIALS.map((t, i) => (
+                <div key={t.id} className="h-1 w-1 rounded-full" style={{ background: `rgba(${t.accentRgb},0.4)` }} />
               ))}
             </div>
           </div>

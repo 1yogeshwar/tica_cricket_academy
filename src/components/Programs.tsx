@@ -239,7 +239,7 @@ export default function Courses() {
   const activeProgram = PROGRAMS.find(p => p.id === active)!;
 
   return (
-    <section id="courses" className="relative py-24 md:py-32 overflow-hidden"
+    <section id="programs" className="relative py-24 md:py-32 overflow-hidden"
       style={{ background: "linear-gradient(to bottom, #030507 0%, #050810 50%, #030507 100%)" }}>
       {/* Ambient bg glow */}
       <motion.div className="pointer-events-none absolute inset-0"
